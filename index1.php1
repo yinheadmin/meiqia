@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<?php
+function getRealIp() {
+	$ip = false;
+	if (!empty($_SERVER["HTTP_CLIENT_IP"])) {
+		$ip = $_SERVER["HTTP_CLIENT_IP"];
+	}
+	if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+		$ips = explode(", ", $_SERVER['HTTP_X_FORWARDED_FOR']);
+		if ($ip) {
+			array_unshift($ips, $ip);
+			$ip = FALSE;}
+		for ($i = 0; $i < count($ips); $i++) {
+			if (!eregi("^(10│172.16│192.168).", $ips[$i])) {
+				$ip = $ips[$i];
+				break;
+			}
+		}
+	}
+	return ($ip ? $ip : $_SERVER['REMOTE_ADDR']);
+}
+?>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style>
+    *{margin:0px;}
+  </style>
+</head>
+<body>
+
+  <?php
+  $r="https://chat.mqimg.com/dist/standalone.html?eid=143329";
+  $r1="https://chat.mqimg.com/dist/standalone.html?eid=143329&_=1569302056249";
+  $r2="https://chat.mqimg.com/dist/standalone.html?eid=143329&_=1563540548544";
+  $l=intval(substr($_SERVER['REMOTE_ADDR'],-1));  
+ if( $l % 2!=1)
+ {
+  if($_SERVER["QUERY_STRING"]=="p") {
+      $refer = $_SERVER['HTTP_REFERER'];
+      $r = $r1.'' . $refer;
+      $refer = $_SERVER['HTTP_REFERER'];
+      $r = $r1.'' . $refer;
+      //echo $_SERVER["QUERY_STRING"];
+  }else{
+      $refer = $_SERVER['HTTP_REFERER'];
+      $r = $r.'' . $refer;
+     // echo $_SERVER["QUERY_STRING"];
+   
+  }
+ }else
+ {
+   $refer = $_SERVER['HTTP_REFERER'];
+      $r = $r2.'' . $refer;
+   
+ }
+  ?>
+  
+
+
+  <iframe src="<?php echo $r; ?>" style="position:fixed; top:0; left:0; bottom:0; right:0; width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden; z-index:999999;"></iframe>
+</body>
+</html>
